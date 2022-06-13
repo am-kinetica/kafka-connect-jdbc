@@ -135,13 +135,13 @@ abstract class TableQuerier implements Comparable<TableQuerier> {
   }
 
   private void releaseLocksQuietly() {
-    if (db != null) {
-      try {
-        db.commit();
-      } catch (SQLException e) {
-        log.warn("Error while committing read transaction, database locks may still be held", e);
-      }
-    }
+//    if (db != null) {
+//      try {
+//        db.commit();
+//      } catch (SQLException e) {
+//        log.warn("Error while committing read transaction, database locks may still be held", e);
+//      }
+//    }
     db = null;
   }
 

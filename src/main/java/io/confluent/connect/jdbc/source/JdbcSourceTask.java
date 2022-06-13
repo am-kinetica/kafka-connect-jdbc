@@ -303,7 +303,7 @@ public class JdbcSourceTask extends SourceTask {
       @Override
       protected void onConnect(final Connection connection) throws SQLException {
         super.onConnect(connection);
-        connection.setAutoCommit(false);
+//        connection.setAutoCommit(false);
       }
     };
   }
@@ -511,9 +511,9 @@ public class JdbcSourceTask extends SourceTask {
       boolean incrementingOptional = false;
       boolean atLeastOneTimestampNotOptional = false;
       final Connection conn = cachedConnectionProvider.getConnection();
-      boolean autoCommit = conn.getAutoCommit();
+//      boolean autoCommit = conn.getAutoCommit();
       try {
-        conn.setAutoCommit(true);
+//        conn.setAutoCommit(true);
         Map<ColumnId, ColumnDefinition> defnsById = dialect.describeColumns(conn, table, null);
         for (ColumnDefinition defn : defnsById.values()) {
           String columnName = defn.id().name();
@@ -526,7 +526,8 @@ public class JdbcSourceTask extends SourceTask {
           }
         }
       } finally {
-        conn.setAutoCommit(autoCommit);
+//        conn.setAutoCommit(autoCommit);
+        log.debug("End validateNonNullable ...");
       }
 
       // Validate that requested columns for offsets are NOT NULL. Currently this is only performed

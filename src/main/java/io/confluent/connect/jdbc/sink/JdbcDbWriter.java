@@ -54,7 +54,7 @@ public class JdbcDbWriter {
       @Override
       protected void onConnect(final Connection connection) throws SQLException {
         log.info("JdbcDbWriter Connected");
-        connection.setAutoCommit(false);
+//        connection.setAutoCommit(false);
       }
     };
   }
@@ -80,15 +80,16 @@ public class JdbcDbWriter {
         buffer.flush();
         buffer.close();
       }
-      connection.commit();
+//      connection.commit();
     } catch (SQLException | TableAlterOrCreateException e) {
-      try {
-        connection.rollback();
-      } catch (SQLException sqle) {
-        e.addSuppressed(sqle);
-      } finally {
-        throw e;
-      }
+//      try {
+//        connection.rollback();
+//      } catch (SQLException sqle) {
+//        e.addSuppressed(sqle);
+//      } finally {
+//        throw e;
+//      }
+      throw e;
     }
   }
 

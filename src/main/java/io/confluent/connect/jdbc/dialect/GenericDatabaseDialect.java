@@ -420,6 +420,8 @@ public class GenericDatabaseDialect implements DatabaseDialect {
 
   @Override
   public List<TableId> tableIds(Connection conn) throws SQLException {
+    glog.debug("Type of Connection instance = " + conn.getClass().getName());
+    glog.debug("Canonical Name of Connection instance = " + conn.getClass().getCanonicalName());
     DatabaseMetaData metadata = conn.getMetaData();
     String[] tableTypes = tableTypes(metadata, this.tableTypes);
     String tableTypeDisplay = displayableTableTypes(tableTypes, ", ");
@@ -1232,17 +1234,17 @@ public class GenericDatabaseDialect implements DatabaseDialect {
         statement.executeUpdate(ddlStatement);
       }
     }
-    try {
-      connection.commit();
-    } catch (Exception e) {
-      try {
-        connection.rollback();
-      } catch (SQLException sqle) {
-        e.addSuppressed(sqle);
-      } finally {
-        throw e;
-      }
-    }
+//    try {
+//      connection.commit();
+//    } catch (Exception e) {
+//      try {
+//        connection.rollback();
+//      } catch (SQLException sqle) {
+//        e.addSuppressed(sqle);
+//      } finally {
+//        throw e;
+//      }
+//    }
   }
 
   @Override
