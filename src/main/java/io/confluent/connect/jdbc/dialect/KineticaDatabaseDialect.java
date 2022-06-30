@@ -50,9 +50,6 @@ import java.util.UUID;
 public class KineticaDatabaseDialect extends GenericDatabaseDialect {
   private static final Logger log = LoggerFactory.getLogger(KineticaDatabaseDialect.class);
 
-  // Visible for testing
-  volatile int maxIdentifierLength = 0;
-
   /**
    * The provider for {@link KineticaDatabaseDialect}.
    */
@@ -76,8 +73,6 @@ public class KineticaDatabaseDialect extends GenericDatabaseDialect {
    */
   private static final Set<String> CAST_TYPES = Collections.unmodifiableSet(
           Utils.mkSet(
-                  JSON_TYPE_NAME,
-                  JSONB_TYPE_NAME,
                   UUID_TYPE_NAME
           )
   );
@@ -230,6 +225,28 @@ public class KineticaDatabaseDialect extends GenericDatabaseDialect {
   }
 
   @Override
+  public String buildUpsertQueryStatement(
+      TableId table,
+      Collection<ColumnId> keyColumns,
+      Collection<ColumnId> nonKeyColumns
+  ) {
+
+    ExpressionBuilder builder = expressionBuilder();
+    builder.append("insert into ");
+    builder.append(table);
+    builder.append(KINETICA_UPSERT_HINT);
+    builder.append("(");
+    builder.appendList()
+        .delimitedBy(",")
+        .transformedBy(ExpressionBuilder.columnNames())
+        .of(keyColumns, nonKeyColumns);
+    builder.append(") values(");
+    builder.appendMultiple(",", "?", keyColumns.size() + nonKeyColumns.size());
+    builder.append(")");
+    return builder.toString();
+  }
+
+  @Override
   protected void formatColumnValue(
           ExpressionBuilder builder,
           String schemaName,
@@ -309,7 +326,7 @@ public class KineticaDatabaseDialect extends GenericDatabaseDialect {
       return NUMERIC_TYPE_SCALE_HIGH;
     }
 
-    // Postgres requires DECIMAL/NUMERIC columns to have a precision greater than zero
+    // Kinetica requires DECIMAL/NUMERIC columns to have a precision greater than zero
     // If the precision appears to be zero, it's because the user didn't define a fixed precision
     // for the column.
     if (defn.precision() == 0) {
