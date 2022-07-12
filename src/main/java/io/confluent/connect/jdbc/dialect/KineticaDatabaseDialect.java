@@ -280,7 +280,7 @@ public class KineticaDatabaseDialect extends GenericDatabaseDialect {
 
   /**
    * Return the transform that produces a prepared statement variable for each of the columns.
-   * PostgreSQL may require the variable to have a type suffix, such as {@code ?::uuid}.
+   * Kinetica may require the variable to have a type suffix, such as {@code ?::uuid}.
    *
    * @param defn the table definition; may be null if unknown
    * @return the transform that produces the variable expression for each column; never null
